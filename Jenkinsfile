@@ -2,27 +2,21 @@ pipeline {
     agent any
 
     environment {
-        ANSIBLE_HOST_KEY_CHECKING = 'False'
+        ANSIBLE_FORCE_COLOR = 'true'
     }
 
     stages {
-        stage('Clone Repo') {
+        stage('Checkout') {
             steps {
-                git(
-                    branch: 'main',
-                    credentialsId: 'ansible-ssh-key',
-                    url: 'https://github.com/MZidan31/infra-ansible-jenkins.git'
-                )
+                checkout scm
             }
         }
 
         stage('Deploy NGINX via Ansible') {
             steps {
-                sshagent(credentials: ['ansible-ssh-key']) {
+                sshagent(credentials: ['test2']) {
                     ansiColor('xterm') {
-                        sh '''
-                            ansible-playbook nginx.yml -i inventory.ini
-                        '''
+                        sh 'ansible-playbook nginx.yml -i inventory.ini'
                     }
                 }
             }
