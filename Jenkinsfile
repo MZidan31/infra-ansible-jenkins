@@ -18,7 +18,7 @@ pipeline {
 
         stage('Deploy NGINX via Ansible') {
             steps {
-                sshagent(credentials: ['test2']) {
+                sshagent(credentials: ['ansible-ssh-key']) {
                     ansiColor('xterm') {
                         sh '''
                             ansible-playbook nginx.yml \
