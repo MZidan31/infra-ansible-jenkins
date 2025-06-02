@@ -22,8 +22,8 @@ pipeline {
                     ansiColor('xterm') {
                         sh '''
                             ansible-playbook nginx.yml \
-                            -i inventory \
-                            --key-file ~/.ssh/id_rsa
+                            -i inventory.ini \
+                            --key-file /var/lib/jenkins/.ssh/id_rsa
                         '''
                     }
                 }
