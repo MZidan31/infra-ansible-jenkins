@@ -21,9 +21,7 @@ pipeline {
                 sshagent(credentials: ['ansible-ssh-key']) {
                     ansiColor('xterm') {
                         sh '''
-                            ansible-playbook nginx.yml \
-                            -i inventory.ini \
-                            --key-file /var/lib/jenkins/.ssh/id_rsa
+                            ansible-playbook nginx.yml -i inventory.ini
                         '''
                     }
                 }
