@@ -1,0 +1,16 @@
+---
+- name: Install dan jalankan NGINX
+  hosts: web
+  become: yes
+  tasks:
+    - name: Install NGINX
+      apt:
+        name: nginx
+        state: present
+        update_cache: yes
+
+    - name: Pastikan NGINX aktif
+      service:
+        name: nginx
+        state: started
+        enabled: true
