@@ -1,6 +1,6 @@
 pipeline {
   agent any
-  tools { ansible 'Ansible' }
+  tools { ansible 'ansible' }
   environment { ANSIBLE_CONFIG = "${WORKSPACE}/ansible.cfg" }
   stages {
     stage('Checkout') {
@@ -19,7 +19,7 @@ pipeline {
           ansiblePlaybook(
             credentialsId: 'ansible-ssh-key',
             disableHostKeyChecking: true,
-            installation: 'Ansible',
+            installation: 'ansible',
             inventory: 'hosts.ini',
             playbook: 'playbook.yml',
             colorized: true
