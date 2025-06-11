@@ -1,14 +1,17 @@
-- name: Install dan jalankan NGINX
-  hosts: test
+- name: Install and enable NGINX on Ubuntu
+  hosts: web
   become: true
   tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
     - name: Install NGINX
       apt:
         name: nginx
         state: present
-        update_cache: yes
 
-    - name: Start dan enable NGINX
+    - name: Start and enable NGINX
       service:
         name: nginx
         state: started
