@@ -1,34 +1,32 @@
 pipeline {
-    agent any
-
-    environment {
-        ANSIBLE_FORCE_COLOR = 'true'
+  agent any
+  tools { ansible 'Ansible' }
+  environment { ANSIBLE_CONFIG = "${WORKSPACE}/ansible.cfg" }
+  stages {
+    stage('Checkout') {
+      steps { git url: 'https://github.com/MZidan31/infra-ansible-jenkins.git', branch: 'main' }
     }
-
-    stages {
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
+    stage('SSH Test') {
+      steps {
+        sshagent(['ansible-ssh-key']) {
+          sh "ssh -o StrictHostKeyChecking=no serda@192.168.239.128 exit"
         }
-
-        stage('Deploy NGINX via Ansible') {
-            steps {
-                sshagent(credentials: ['test2']) {
-                    ansiColor('xterm') {
-                        sh 'ansible-playbook nginx.yml -i inventory.ini'
-                    }
-                }
-            }
-        }
+      }
     }
-
-    post {
-        failure {
-            echo '❌ Deployment gagal. Silakan cek error log di konsol output.'
+    stage('Deploy NGINX') {
+      steps {
+        sshagent(['ansible-ssh-key']) {
+          ansiblePlaybook(
+            credentialsId: 'ansible-ssh-key',
+            disableHostKeyChecking: true,
+            installation: 'Ansible',
+            inventory: 'hosts.ini',
+            playbook: 'playbook.yml',
+            colorized: true
+          )
         }
-        success {
-            echo '✅ Deployment berhasil!'
-        }
+      }
     }
+  }
+  post { always { cleanWs() } }
 }
